@@ -1,9 +1,19 @@
+
 <resources>
     <string name="app_name">ArtSpace</string>
 
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+
     <string name="artwork_1_title">Title of artwork 1</string>
     <string name="artwork_1_artist">Artist Name</string>
     <string name="artwork_1_year">2020</string>
+
+    <string name="artwork_2_title">Title of artwork 2</string>
+    <string name="artwork_2_artist">Artist Name</string>
+    <string name="artwork_2_year">2022</string>
+
+    <string name="artwork_3_title">Title of artwork 3</string>
+    <string name="artwork_3_artist">Artist Name</string>
+    <string name="artwork_3_year">2024</string>
 </resources>

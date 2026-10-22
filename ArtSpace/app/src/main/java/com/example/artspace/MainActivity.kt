@@ -1,3 +1,4 @@
+
 package com.example.artspace
 
 import android.os.Bundle
@@ -14,6 +15,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -38,6 +43,33 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ArtSpaceApp(modifier: Modifier = Modifier) {
+
+    var currentArtwork by remember { mutableIntStateOf(0) }
+
+    val images = listOf(
+        R.drawable.art_1,
+        R.drawable.art_2,
+        R.drawable.art_3
+    )
+
+    val titles = listOf(
+        R.string.artwork_1_title,
+        R.string.artwork_2_title,
+        R.string.artwork_3_title
+    )
+
+    val artists = listOf(
+        R.string.artwork_1_artist,
+        R.string.artwork_2_artist,
+        R.string.artwork_3_artist
+    )
+
+    val years = listOf(
+        R.string.artwork_1_year,
+        R.string.artwork_2_year,
+        R.string.artwork_3_year
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -46,21 +78,51 @@ fun ArtSpaceApp(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            painter = painterResource(R.drawable.art_1),
-            contentDescription = stringResource(R.string.artwork_1_title),
-            modifier = Modifier.padding(16.dp)
+            painter = painterResource(images[currentArtwork]),
+            contentDescription = stringResource(titles[currentArtwork]),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(16.dp)
         )
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = stringResource(R.string.artwork_1_title), fontSize = 24.sp)
-            Text(text = stringResource(R.string.artwork_1_artist) + " (" +
-                    stringResource(R.string.artwork_1_year) + ")")
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(titles[currentArtwork]),
+                fontSize = 24.sp
+            )
+
+            Text(
+                text = stringResource(artists[currentArtwork]) +
+                        " (" + stringResource(years[currentArtwork]) + ")"
+            )
         }
+
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(onClick = { }) { Text(stringResource(R.string.previous)) }
-            Button(onClick = { }) { Text(stringResource(R.string.next)) }
+            Button(
+                onClick = {
+                    currentArtwork =
+                        (currentArtwork - 1 + images.size) % images.size
+                }
+            ) {
+                Text(stringResource(R.string.previous))
+            }
+
+            Button(
+                onClick = {
+                    currentArtwork =
+                        (currentArtwork + 1) % images.size
+                }
+            ) {
+                Text(stringResource(R.string.next))
+            }
         }
     }
 }
