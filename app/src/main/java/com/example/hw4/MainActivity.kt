@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
+import java.text.NumberFormat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,4 +94,9 @@ fun TipTimeLayoutPreview() {
     Hw4Theme {
         TipTimeLayout()
     }
+}
+
+private fun calculateTip(amount: Double, tipPercent: Double = 15.0): String {
+    val tip = tipPercent / 100 * amount
+    return NumberFormat.getCurrencyInstance().format(tip)
 }
