@@ -6,11 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +47,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ArtSpaceApp(modifier: Modifier = Modifier) {
-
     var currentArtwork by remember { mutableIntStateOf(0) }
 
     val images = listOf(
@@ -70,59 +73,120 @@ fun ArtSpaceApp(modifier: Modifier = Modifier) {
         R.string.artwork_3_year
     )
 
-    Column(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+            .padding(16.dp)
     ) {
-        Image(
-            painter = painterResource(images[currentArtwork]),
-            contentDescription = stringResource(titles[currentArtwork]),
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(16.dp)
-        )
+        val isWideScreen = maxWidth > maxHeight
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(titles[currentArtwork]),
-                fontSize = 24.sp
-            )
+        if (isWideScreen) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Image(
+                    painter = painterResource(images[currentArtwork]),
+                    contentDescription = stringResource(titles[currentArtwork]),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(16.dp)
+                )
 
-            Text(
-                text = stringResource(artists[currentArtwork]) +
-                        " (" + stringResource(years[currentArtwork]) + ")"
-            )
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(titles[currentArtwork]),
+                            fontSize = 24.sp
+                        )
+                        Text(
+                            text = stringResource(artists[currentArtwork]) +
+                                    " (" + stringResource(years[currentArtwork]) + ")"
+                        )
+                    }
+
+                    NavigationButtons(
+                        onPrevious = {
+                            currentArtwork =
+                                (currentArtwork - 1 + images.size) % images.size
+                        },
+                        onNext = {
+                            currentArtwork = (currentArtwork + 1) % images.size
+                        }
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(images[currentArtwork]),
+                    contentDescription = stringResource(titles[currentArtwork]),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(titles[currentArtwork]),
+                        fontSize = 24.sp
+                    )
+                    Text(
+                        text = stringResource(artists[currentArtwork]) +
+                                " (" + stringResource(years[currentArtwork]) + ")"
+                    )
+                }
+
+                NavigationButtons(
+                    onPrevious = {
+                        currentArtwork =
+                            (currentArtwork - 1 + images.size) % images.size
+                    },
+                    onNext = {
+                        currentArtwork = (currentArtwork + 1) % images.size
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun NavigationButtons(
+    onPrevious: () -> Unit,
+    onNext: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(onClick = onPrevious) {
+            Text(stringResource(R.string.previous))
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(
-                onClick = {
-                    currentArtwork =
-                        (currentArtwork - 1 + images.size) % images.size
-                }
-            ) {
-                Text(stringResource(R.string.previous))
-            }
-
-            Button(
-                onClick = {
-                    currentArtwork =
-                        (currentArtwork + 1) % images.size
-                }
-            ) {
-                Text(stringResource(R.string.next))
-            }
+        Button(onClick = onNext) {
+            Text(stringResource(R.string.next))
         }
     }
 }
